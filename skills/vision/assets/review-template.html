@@ -38,8 +38,11 @@
     <div class="vr-progress"><span>hypotheticals</span><b id="vr-progress"></b></div>
     <div class="vr-stack" id="vr-stack"></div>
     <div class="vr-done" id="vr-done" hidden>
-      <h2>All verdicts recorded</h2>
+      <h2>Every hypothetical is answered</h2>
+      <p class="vr-done-note">Your verdicts are recorded below. Send them back and the agent rebuilds the draft around them for the next round.</p>
       <ul class="vr-ledger" id="vr-ledger"></ul>
+      <button type="button" class="vr-send" id="vr-send" onclick="sendBack()">Send my verdicts back</button>
+      <p class="vr-sent" id="vr-sent" hidden>Sent - the agent is folding these into the next draft.</p>
     </div>
   </aside>
 
@@ -119,8 +122,21 @@ function commit(i){
   if (topIdx >= CARDS.length) {
     document.getElementById('vr-ledger').innerHTML =
       ledger.map(l => `<li><b>${l.id}</b> ${l.verdict}${l.notes ? ' - ' + esc(l.notes) : ''}</li>`).join('');
-    setTimeout(() => { document.getElementById('vr-done').hidden = false; }, 400);
+    setTimeout(() => { stack.hidden = true; document.getElementById('vr-done').hidden = false; }, 400);
   }
+}
+function sendBack(){
+  const btn = document.getElementById('vr-send');
+  if (window.lavish?.queuePrompt) {
+    window.lavish.queuePrompt(
+      `All ${CARDS.length} hypotheticals are answered. Fold every verdict into the draft and send back the next round.`,
+      { tag:'vision-verdict', queueKey:'vision-round-complete', text:'All verdicts recorded - next round',
+        element: document.getElementById('vr-done'), data:{ complete:true, verdicts: ledger } });
+  }
+  window.lavish?.sendQueuedPrompts?.();
+  btn.disabled = true;
+  btn.textContent = 'Sent for the next round';
+  document.getElementById('vr-sent').hidden = false;
 }
 layout();
 </script>

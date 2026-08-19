@@ -52,19 +52,22 @@ body.vr {
 }
 .vr-progress b { font-weight: 600; }
 
-.vr-stack { position: relative; min-height: 660px; }
+.vr-stack { position: relative; display: grid; min-height: 660px; }
+.vr-stack[hidden] { display: none; }
 .vr-card {
   position: absolute; inset: 0;
   background: var(--paper); border: var(--hair);
   padding: 26px 28px; display: flex; flex-direction: column; gap: 10px;
   transition: transform .35s ease, opacity .35s ease;
-  overflow-y: auto;
+  overflow: hidden;
 }
-/* the sheets peeking out behind the top card carry the whole depth illusion */
-.vr-card[data-depth="0"] { z-index: 3; }
+/* only the top sheet is a real card: it sits in flow, so the stack takes its height */
+.vr-card[data-depth="0"] { position: relative; inset: auto; z-index: 3; overflow: visible; }
+/* the sheets behind it are cosmetic paper - offset edges only, never content */
 .vr-card[data-depth="1"] { transform: translate(9px, 9px); z-index: 2; pointer-events: none; }
 .vr-card[data-depth="2"] { transform: translate(18px, 18px); z-index: 1; pointer-events: none; }
-.vr-card.vr-gone { transform: translateX(-120%) rotate(-5deg); opacity: 0; pointer-events: none; }
+.vr-card:not([data-depth="0"]) > * { visibility: hidden; }
+.vr-card.vr-gone { position: absolute; inset: 0; transform: translateX(-120%) rotate(-5deg); opacity: 0; pointer-events: none; }
 .vr-card[hidden] { display: none; }
 
 .vr-card-id { font-size: 13px; font-variant-caps: small-caps; letter-spacing: .1em; color: var(--mute); }
@@ -97,8 +100,17 @@ body.vr {
 }
 .vr-commit:disabled { background: var(--paper); color: var(--mute); cursor: not-allowed; }
 
-/* done state + ledger of recorded verdicts */
-.vr-done { border: var(--hair); padding: 24px 28px; }
-.vr-done h2 { font-size: 15px; font-weight: 600; font-variant-caps: small-caps; letter-spacing: .08em; margin: 0 0 10px; }
+/* done state: the round is closed, and the only thing left to do is send it back */
+.vr-done { border: 2px solid var(--ink); padding: 28px 30px; }
+.vr-done h2 { font-size: 24px; font-weight: 600; letter-spacing: .01em; line-height: 1.3; margin: 0 0 6px; }
+.vr-done-note { font-size: 14.5px; color: var(--mute); font-style: italic; margin: 0 0 16px; }
 .vr-ledger { list-style: none; margin: 0; padding: 0; font-size: 14.5px; line-height: 2; }
 .vr-ledger b { font-variant-caps: small-caps; letter-spacing: .06em; font-weight: 600; }
+.vr-send {
+  font: 17px var(--serif); font-variant-caps: small-caps; letter-spacing: .08em;
+  background: var(--ink); color: var(--paper); border: var(--hair);
+  padding: 14px 18px; cursor: pointer; width: 100%; margin-top: 20px;
+}
+.vr-send:disabled { background: var(--paper); color: var(--mute); cursor: default; }
+.vr-sent { font-size: 14px; font-style: italic; color: var(--mute); margin: 10px 0 0; text-align: center; }
+.vr-sent[hidden] { display: none; }
