@@ -34,8 +34,9 @@ every future you re-litigates them from scratch.
 actually build, drafts a VISION.md as a testable acceptance policy, then
 stress-tests it with hard hypotheticals - tempting-but-off-mission features,
 principle collisions, slippery slopes - whose answers only you can give. You
-answer them on an interactive review board, and your yes/no + reasoning gets
-folded back in, edit by traced edit, until the vision is genuinely yours.
+answer them on an interactive review board, and each verdict is folded back
+in as a principle line with a short rationale, until VISION.md is sufficient
+on its own for an accept/resist test.
 
 - **Evidence over vibes** - every principle cites real merged PRs or commits;
   generic engineering virtues are banned. If your history is unreadable, the
@@ -48,6 +49,8 @@ folded back in, edit by traced edit, until the vision is genuinely yours.
   paper set like literature, your full latest draft always visible,
   hypotheticals dealt one at a time from a stack of cards; a verdict flips the
   card and reveals the next.
+- **One alignment surface** - VISION.md is what a reviewer uses; board
+  transcripts stay ephemeral and are never committed next to the vision.
 
 For what the result looks like, see
 [firstmate's VISION.md](https://github.com/kunchenguid/firstmate/blob/main/VISION.md) -
@@ -85,7 +88,7 @@ repo + author
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
-│ existing vision?  │  yes → delta mode against the approved baseline
+│ existing vision?  │  yes → delta mode; migrate any answers file
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
@@ -101,10 +104,10 @@ repo + author
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
-│ review board      │  card-stack verdicts → traced edits → approval
+│ review board      │  card-stack verdicts → principle + rationale → approval
 └─────────┬─────────┘
           ▼
-  VISION.md + answers record
+  VISION.md
 ```
 
 ## Usage

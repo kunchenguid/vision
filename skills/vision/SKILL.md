@@ -16,6 +16,9 @@ approve: an acceptance policy for the project's future, grounded in what they
 actually build, and sharpened by hypotheticals they answer on an interactive
 review board.
 
+VISION.md is the only committed alignment surface. A reviewer who has never
+seen the board must be able to accept or resist a change from it alone.
+
 This is not a writing exercise. Follow this file top to bottom.
 
 ## Host requirement
@@ -36,9 +39,9 @@ report a blocker only if the launch itself fails.
 ## Hard rules
 
 1. **Evidence over vibes.** Every principle in the draft must be traceable to
-   concrete evidence: named PRs or commits, files, docs, or the author's
-   recorded answers. Generic engineering virtues ("we value quality") are
-   banned unless the history demonstrates them specifically.
+   concrete evidence: named PRs or commits, files, docs, or a rationale the
+   author approved into VISION.md. Generic engineering virtues ("we value
+   quality") are banned unless the history demonstrates them specifically.
 2. **Check for an existing VISION.md first.** If one exists on the default
    branch, switch to delta mode: treat it as the approved baseline, propose
    line-level candidate changes from evidence newer than it, and never write a
@@ -48,7 +51,7 @@ report a blocker only if the launch itself fails.
    never fold in a principle they did not state or demonstrate.
 4. **A vision is an acceptance policy.** Write testable accept/resist criteria
    in declarative present tense, with explicit non-goals, so a future reader,
-   human or agent, can apply them to a concrete change.
+   human or agent, can apply them to a concrete change from VISION.md alone.
 5. **No softball hypotheticals.** Each one must sit on a genuine fault line
    where yes and no are both defensible, with both sides steelmanned. If you
    can predict the author's answer, replace the hypothetical.
@@ -63,6 +66,11 @@ report a blocker only if the launch itself fails.
    answer changed the text.
 8. **Formatting.** One sentence per line. Plain hyphens, never em dashes. No
    roadmap, no feature list, no marketing voice.
+9. **VISION.md is the single alignment surface.** Each author verdict becomes
+   a principle line plus a one- or two-sentence rationale (the why), never the
+   hypothetical, never the board transcript. Never write, keep, or point to
+   an answers file in the target repo. Board transcripts may live in the
+   tool's scratch area and must never be committed.
 
 ## Pipeline
 
@@ -82,10 +90,14 @@ A VISION.md has a stable anatomy; hold the draft to it:
   one thing: ...".
 - 3-6 principle sections with short declarative headings, each a set of
   testable present-tense commitments and refusals.
+- Folded rationales: when a board verdict sharpens a principle, add one or
+  two sentences of why next to it. Do not include the hypothetical, the card
+  id, or the transcript.
 - Explicit non-goals, named concretely ("it is not a CI system, not a ...").
 - A closing pair of tests: "A change aligns when ..." and "A change should be
   resisted when ...", concrete enough to apply to a real PR.
-- Voice: declarative, present tense, zero marketing; length 40-70 lines.
+- Voice: declarative, present tense, zero marketing; length a page or two
+  (40-70 lines), not a ledger of questions asked.
 
 If the author names exemplar visions, read them; note shape, voice, length.
 
@@ -95,6 +107,9 @@ If the author names exemplar visions, read them; note shape, voice, length.
   age against the history and propose only evidence-backed candidate
   additions or edits, each independently acceptable.
 - If not: from-scratch mode.
+- If VISION-ANSWERS.md or any companion answers file exists, run Migration
+  before drafting: fold missing rationales into VISION.md, delete the answers
+  file, and remove pointers to it.
 
 ### Step 3 - Mine the evidence
 
@@ -136,30 +151,35 @@ If the author names exemplar visions, read them; note shape, voice, length.
 
 ### Step 6 - Review loop (lavish-axi, from the shipped template)
 
-- Copy `assets/review-template.html` and `assets/review.css` next to each
-  other, then fill only the template's marked slots: project name, run note,
-  the full DRAFT markdown, and the CARDS array (id, title, proposal, tested
-  principle, both-sides steelman per card).
+- Copy `assets/review-template.html` and `assets/review.css` into the tool's
+  scratch area (not the target repo), then fill only the template's marked
+  slots: project name, run note, the full DRAFT markdown, and the CARDS array
+  (id, title, proposal, tested principle, both-sides steelman per card).
 - Change nothing else: the template already carries the house structure -
   full draft on the left, one card at a time on the right, the steelman in
   full view, one queued verdict per card - so no boilerplate is rewritten and
   no run is restyled.
 - Launch with `npx -y lavish-axi <board.html>`, report the URL, then wait on
   `npx -y lavish-axi poll <board.html>`; answers arrive as queued verdicts.
-- On each batch: record the verdicts verbatim in a durable answers file,
-  distill the principles they reveal, fold every verdict into the draft,
-  update the board in place (new draft text, remaining cards), and reply
-  through `poll --agent-reply` with a changelog line per verdict
-  ("H-7 no -> authority section now opens with ...").
+- On each batch: fold every verdict into the draft as a principle line plus
+  a one- or two-sentence rationale (the author's why). Do not copy the
+  hypothetical, the card id, or the board transcript into VISION.md. Board
+  HTML and poll logs may remain in the tool's scratch area; never write an
+  answers file into the target repo. Update the board in place (new draft
+  text, remaining cards), and reply through `poll --agent-reply` with a
+  changelog line per verdict ("H-7 no -> authority section now opens with
+  ...").
 - Continue until the author approves or ends the session. Do not approve on
   their behalf; do not treat silence as approval.
 
 ### Step 7 - Finish
 
-- Deliver: the approved VISION.md text (or approved delta), the full
-  hypothetical set with recorded verdicts and reasoning, and the changelog.
-- The answers file is durable calibration material; tell the author to keep it
-  next to the vision.
+- Deliver: the approved VISION.md text (or approved delta). That file is the
+  whole alignment surface.
+- Confirm the target repo has no VISION-ANSWERS.md and no other answers file,
+  and that README and AGENTS.md do not point at one.
+- Do not tell the author to keep an answers file. The changelog lived in the
+  review-loop replies; it is not a committed artifact.
 
 ## Output template (from-scratch mode)
 
@@ -171,8 +191,10 @@ If the author names exemplar visions, read them; note shape, voice, length.
 
     ## {Principle section, 3-6 of these}
 
-    {Declarative, testable, present-tense lines; one sentence per line.}
-    {Explicit boundaries: what is welcome, what is refused, and why.}
+    {Declarative, testable, present-tense principle; one sentence per line.}
+    {One- or two-sentence rationale: why this is so. Distilled from evidence
+    or from an author verdict; never a hypothetical, card id, or transcript.}
+    {Explicit boundaries: what is welcome, what is refused.}
 
     ## Scope
 
@@ -187,11 +209,39 @@ If the author names exemplar visions, read them; note shape, voice, length.
 
 - [ ] Target repo and author resolved
 - [ ] Existing VISION.md checked (mode chosen)
+- [ ] Existing VISION-ANSWERS.md migrated or confirmed absent
 - [ ] Evidence sheet built from real PRs or commits (no invented evidence)
 
 ## Pre-approval checklist (before the author signs off)
 
-- [ ] Every drafted line traces to the evidence sheet or a recorded verdict
+- [ ] Every drafted line traces to the evidence sheet or a folded author
+      rationale in VISION.md
 - [ ] 8-12 hypotheticals, none predictable, both sides steelmanned
-- [ ] Every author verdict folded in with a traced changelog line
-- [ ] Answers file saved next to the vision
+- [ ] Every author verdict folded in as principle + rationale, with a traced
+      changelog line in the review reply
+- [ ] VISION.md is sufficient on its own for an accept/resist test
+- [ ] No answers file written, kept, or pointed to in the target repo
+
+## Migration (existing VISION-ANSWERS.md)
+
+When the target repo already has `VISION-ANSWERS.md` (or any companion
+answers or transcript file next to the vision):
+
+1. Read it. Extract only the why: the author's stated principle and
+   rationale. Discard hypotheticals, card ids, verdict labels, steelmans,
+   and board transcripts.
+2. Fold any rationale VISION.md lacks into VISION.md using the fold shape
+   below. Skip anything already captured. Merge overlapping answers into one
+   principle rather than one line per question.
+3. Delete the answers file from the target repo.
+4. Remove pointers to it from AGENTS.md, README, and any other committed doc.
+
+Fold shape (exactly this, nothing else):
+
+    {Principle line: a testable present-tense commitment or refusal.}
+    {Rationale: one or two sentences of why. No hypothetical. No card id.}
+
+Length bar: VISION.md stays a page or two of principles (target 40-70
+lines), not a ledger. If folding would grow it into a Q&A dump, distill
+harder. The test is: a reviewer who has never seen the board can accept or
+resist a concrete change from VISION.md alone.
