@@ -34,9 +34,9 @@ every future you re-litigates them from scratch.
 actually build, drafts a VISION.md as a testable acceptance policy, then
 stress-tests it with hard hypotheticals - tempting-but-off-mission features,
 principle collisions, slippery slopes - whose answers only you can give. You
-answer them on an interactive review board, and each verdict is folded back
-in as a principle line with a short rationale, until VISION.md is sufficient
-on its own for an accept/resist test.
+answer them on an interactive review board, and the reasoning behind each
+verdict is reflected in the writing, until VISION.md is sufficient on its
+own for an accept/resist test.
 
 - **Evidence over vibes** - every principle cites real merged PRs or commits;
   generic engineering virtues are banned. If your history is unreadable, the
@@ -104,7 +104,7 @@ repo + author
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
-│ review board      │  card-stack verdicts → principle + rationale → approval
+│ review board      │  card-stack verdicts → fold reasoning into draft → approval
 └─────────┬─────────┘
           ▼
   VISION.md

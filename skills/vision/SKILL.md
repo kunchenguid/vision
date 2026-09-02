@@ -39,7 +39,7 @@ report a blocker only if the launch itself fails.
 ## Hard rules
 
 1. **Evidence over vibes.** Every principle in the draft must be traceable to
-   concrete evidence: named PRs or commits, files, docs, or a rationale the
+   concrete evidence: named PRs or commits, files, docs, or reasoning the
    author approved into VISION.md. Generic engineering virtues ("we value
    quality") are banned unless the history demonstrates them specifically.
 2. **Check for an existing VISION.md first.** If one exists on the default
@@ -66,11 +66,11 @@ report a blocker only if the launch itself fails.
    answer changed the text.
 8. **Formatting.** One sentence per line. Plain hyphens, never em dashes. No
    roadmap, no feature list, no marketing voice.
-9. **VISION.md is the single alignment surface.** Each author verdict becomes
-   a principle line plus a one- or two-sentence rationale (the why), never the
-   hypothetical, never the board transcript. Never write, keep, or point to
-   an answers file in the target repo. Board transcripts may live in the
-   tool's scratch area and must never be committed.
+9. **VISION.md is the single alignment surface.** Fold the author's reasoning
+   into the prose wherever it matters, in whatever form reads best. Never copy
+   hypotheticals or board transcripts into VISION.md. Never write, keep, or
+   point to an answers file in the target repo. Board transcripts may live in
+   the tool's scratch area and must never be committed.
 
 ## Pipeline
 
@@ -90,14 +90,12 @@ A VISION.md has a stable anatomy; hold the draft to it:
   one thing: ...".
 - 3-6 principle sections with short declarative headings, each a set of
   testable present-tense commitments and refusals.
-- Folded rationales: when a board verdict sharpens a principle, add one or
-  two sentences of why next to it. Do not include the hypothetical, the card
-  id, or the transcript.
 - Explicit non-goals, named concretely ("it is not a CI system, not a ...").
 - A closing pair of tests: "A change aligns when ..." and "A change should be
   resisted when ...", concrete enough to apply to a real PR.
 - Voice: declarative, present tense, zero marketing; length a page or two
-  (40-70 lines), not a ledger of questions asked.
+  (40-70 lines). Author reasoning belongs in the prose wherever it matters,
+  in whatever form reads best; never as a ledger of questions asked.
 
 If the author names exemplar visions, read them; note shape, voice, length.
 
@@ -108,8 +106,8 @@ If the author names exemplar visions, read them; note shape, voice, length.
   additions or edits, each independently acceptable.
 - If not: from-scratch mode.
 - If VISION-ANSWERS.md or any companion answers file exists, run Migration
-  before drafting: fold missing rationales into VISION.md, delete the answers
-  file, and remove pointers to it.
+  before drafting: fold any missing reasoning into VISION.md, delete the
+  answers file, and remove pointers to it.
 
 ### Step 3 - Mine the evidence
 
@@ -161,14 +159,14 @@ If the author names exemplar visions, read them; note shape, voice, length.
   no run is restyled.
 - Launch with `npx -y lavish-axi <board.html>`, report the URL, then wait on
   `npx -y lavish-axi poll <board.html>`; answers arrive as queued verdicts.
-- On each batch: fold every verdict into the draft as a principle line plus
-  a one- or two-sentence rationale (the author's why). Do not copy the
-  hypothetical, the card id, or the board transcript into VISION.md. Board
-  HTML and poll logs may remain in the tool's scratch area; never write an
-  answers file into the target repo. Update the board in place (new draft
-  text, remaining cards), and reply through `poll --agent-reply` with a
-  changelog line per verdict ("H-7 no -> authority section now opens with
-  ...").
+- On each batch: fold the author's reasoning into the draft so VISION.md
+  stays self-sufficient for an accept/resist test. Write it in whatever form
+  reads best; do not copy the hypothetical, the card id, or the board
+  transcript. Board HTML and poll logs may remain in the tool's scratch
+  area; never write an answers file into the target repo. Update the board
+  in place (new draft text, remaining cards), and reply through
+  `poll --agent-reply` with a changelog line per verdict ("H-7 no ->
+  authority section now opens with ...").
 - Continue until the author approves or ends the session. Do not approve on
   their behalf; do not treat silence as approval.
 
@@ -191,10 +189,8 @@ If the author names exemplar visions, read them; note shape, voice, length.
 
     ## {Principle section, 3-6 of these}
 
-    {Declarative, testable, present-tense principle; one sentence per line.}
-    {One- or two-sentence rationale: why this is so. Distilled from evidence
-    or from an author verdict; never a hypothetical, card id, or transcript.}
-    {Explicit boundaries: what is welcome, what is refused.}
+    {Declarative, testable, present-tense lines; one sentence per line.}
+    {Explicit boundaries: what is welcome, what is refused, and why.}
 
     ## Scope
 
@@ -214,11 +210,11 @@ If the author names exemplar visions, read them; note shape, voice, length.
 
 ## Pre-approval checklist (before the author signs off)
 
-- [ ] Every drafted line traces to the evidence sheet or a folded author
-      rationale in VISION.md
+- [ ] Every drafted line traces to the evidence sheet or author reasoning
+      reflected in VISION.md
 - [ ] 8-12 hypotheticals, none predictable, both sides steelmanned
-- [ ] Every author verdict folded in as principle + rationale, with a traced
-      changelog line in the review reply
+- [ ] Every author verdict's reasoning is reflected in the draft, with a
+      traced changelog line in the review reply
 - [ ] VISION.md is sufficient on its own for an accept/resist test
 - [ ] No answers file written, kept, or pointed to in the target repo
 
@@ -227,21 +223,15 @@ If the author names exemplar visions, read them; note shape, voice, length.
 When the target repo already has `VISION-ANSWERS.md` (or any companion
 answers or transcript file next to the vision):
 
-1. Read it. Extract only the why: the author's stated principle and
-   rationale. Discard hypotheticals, card ids, verdict labels, steelmans,
-   and board transcripts.
-2. Fold any rationale VISION.md lacks into VISION.md using the fold shape
-   below. Skip anything already captured. Merge overlapping answers into one
-   principle rather than one line per question.
+1. Read it. Extract the author's reasoning. Discard hypotheticals, card ids,
+   verdict labels, steelmans, and board transcripts.
+2. Fold any reasoning VISION.md lacks into the prose, in whatever form reads
+   best. Skip anything already captured. Merge overlapping answers rather
+   than one entry per question.
 3. Delete the answers file from the target repo.
 4. Remove pointers to it from AGENTS.md, README, and any other committed doc.
 
-Fold shape (exactly this, nothing else):
-
-    {Principle line: a testable present-tense commitment or refusal.}
-    {Rationale: one or two sentences of why. No hypothetical. No card id.}
-
-Length bar: VISION.md stays a page or two of principles (target 40-70
-lines), not a ledger. If folding would grow it into a Q&A dump, distill
-harder. The test is: a reviewer who has never seen the board can accept or
-resist a concrete change from VISION.md alone.
+Length bar: VISION.md stays a page or two (target 40-70 lines), not a
+ledger. If folding would grow it into a Q&A dump, distill harder. The test
+is: a reviewer who has never seen the board can accept or resist a concrete
+change from VISION.md alone.
