@@ -159,6 +159,9 @@ If the author names exemplar visions, read them; note shape, voice, length.
   no run is restyled.
 - Launch with `npx -y lavish-axi <board.html>`, report the URL, then wait on
   `npx -y lavish-axi poll <board.html>`; answers arrive as queued verdicts.
+- The author can edit or remove feedback in the Conversation queue. Only the
+  verdict messages they actually send count as answers; card progress or the
+  board snapshot does not establish an answer for an omitted hypothetical.
 - On each batch: fold the author's reasoning into the draft so VISION.md
   stays self-sufficient for an accept/resist test. Write it in whatever form
   reads best; do not copy the hypothetical, the card id, or the board
