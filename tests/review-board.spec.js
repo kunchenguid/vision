@@ -100,15 +100,6 @@ async function sentMessages(page) {
   return page.evaluate(() => window.testHost.sent[0]);
 }
 
-function verdictsIn(messages) {
-  return messages.flatMap(message => {
-    const context = message.prompt.split('\n\nContext data:\n')[1];
-    if (!context) return [];
-    const data = JSON.parse(context);
-    return data.verdicts ?? (data.id ? [data] : []);
-  });
-}
-
 test('repeated Enter records only the focused card and leaves the next card unanswered', async ({ page }) => {
   await openBoard(page);
   const first = page.locator('#vrc-0');
@@ -122,7 +113,14 @@ test('repeated Enter records only the focused card and leaves the next card unan
   await expect.soft(second).toBeVisible();
   await expect.soft(second.getByRole('button', { name: 'Record verdict', exact: true })).toBeDisabled();
   await expect.soft(page.locator('#vr-done')).toBeHidden();
-  expect(verdictsIn(await page.evaluate(() => window.testHost.calls)).map(verdict => verdict.id)).toEqual(['H-1']);
+  const messages = await page.evaluate(() => window.testHost.calls);
+  expect(messages).toHaveLength(1);
+  expect(messages[0]).toMatchObject({
+    _lavishQueueKey: 'H-1',
+    tag: 'vision-verdict',
+    text: 'H-1',
+    prompt: 'H-1 (Hypothetical 1): In vision. Reasoning: Only the first hypothetical was answered.',
+  });
 });
 
 test('sending does not resurrect a verdict removed from the host queue', async ({ page }) => {
@@ -132,7 +130,13 @@ test('sending does not resurrect a verdict removed from the host queue', async (
   await page.getByRole('button', { name: 'Remove queued H-1', exact: true }).click();
   await page.locator('#vr-send').click();
   const messages = await sentMessages(page);
-  expect(verdictsIn(messages).map(verdict => verdict.id)).toEqual(['H-2']);
+  expect(messages).toHaveLength(1);
+  expect(messages[0]).toMatchObject({
+    _lavishQueueKey: 'H-2',
+    tag: 'vision-verdict',
+    text: 'H-2',
+    prompt: 'H-2 (Hypothetical 2): Conditional. Reasoning: Second recorded decision.',
+  });
 });
 
 test('sending preserves a host-edited prompt without adding a stale verdict copy', async ({ page }) => {
@@ -146,6 +150,24 @@ test('sending preserves a host-edited prompt without adding a stale verdict copy
   expect(messages.find(message => message._lavishQueueKey === 'H-1').prompt).toBe(edited);
   expect(JSON.stringify(messages)).not.toContain('Original reasoning that the author replaced.');
   expect(JSON.stringify(messages)).not.toContain('In vision');
+});
+
+test('sending preserves a partial edit without retaining the old verdict or reasoning', async ({ page }) => {
+  await openBoard(page);
+  const originalReason = 'Original reasoning before a partial edit.';
+  const revisedReason = 'Revised reasoning from the queue editor.';
+  await recordCard(page, 0, 'In vision', originalReason);
+  await recordCard(page, 1, 'Conditional', 'Second recorded decision.');
+  const input = page.getByRole('textbox', { name: 'Queued prompt H-1', exact: true });
+  const current = await input.inputValue();
+  const edited = current.replace('In vision', 'Off mission').replace(originalReason, revisedReason);
+  await input.fill(edited);
+  await page.locator('#vr-send').click();
+  const messages = await sentMessages(page);
+  expect(messages).toHaveLength(2);
+  expect(messages.find(message => message._lavishQueueKey === 'H-1').prompt).toBe(edited);
+  expect.soft(JSON.stringify(messages)).not.toContain('In vision');
+  expect.soft(JSON.stringify(messages)).not.toContain(originalReason);
 });
 
 test('sending an emptied host queue does not recreate any feedback', async ({ page }) => {
@@ -165,9 +187,19 @@ test('normal two-card submission sends each verdict once without a duplicate agg
   await page.locator('#vr-send').click();
   const messages = await sentMessages(page);
   expect(messages).toHaveLength(2);
-  expect(verdictsIn(messages)).toEqual([
-    { id: 'H-1', verdict: 'In vision', notes: 'First reason.' },
-    { id: 'H-2', verdict: 'Off mission', notes: 'Second reason.' },
+  expect(messages).toMatchObject([
+    {
+      _lavishQueueKey: 'H-1',
+      tag: 'vision-verdict',
+      text: 'H-1',
+      prompt: 'H-1 (Hypothetical 1): In vision. Reasoning: First reason.',
+    },
+    {
+      _lavishQueueKey: 'H-2',
+      tag: 'vision-verdict',
+      text: 'H-2',
+      prompt: 'H-2 (Hypothetical 2): Off mission. Reasoning: Second reason.',
+    },
   ]);
   await expect(page.locator('#vr-send')).toBeEnabled();
   await page.locator('#vr-send').click();
