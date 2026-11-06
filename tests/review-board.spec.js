@@ -63,6 +63,8 @@ async function openBoard(page, withBridge = true) {
         queuePrompt(prompt, options = {}) {
           const key = options.queueKey;
           const item = { _lavishQueueKey: key, prompt: String(prompt || '') };
+          if (options.tag) item.tag = String(options.tag);
+          if (options.text) item.text = String(options.text);
           if (options.data) item.prompt += '\n\nContext data:\n' + JSON.stringify(options.data, null, 2);
           state.calls.push(structuredClone(item));
           queued.set(key, item);
@@ -143,6 +145,7 @@ test('sending preserves a host-edited prompt without adding a stale verdict copy
   const messages = await sentMessages(page);
   expect(messages.find(message => message._lavishQueueKey === 'H-1').prompt).toBe(edited);
   expect(JSON.stringify(messages)).not.toContain('Original reasoning that the author replaced.');
+  expect(JSON.stringify(messages)).not.toContain('In vision');
 });
 
 test('sending an emptied host queue does not recreate any feedback', async ({ page }) => {

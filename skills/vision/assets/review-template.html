@@ -115,7 +115,7 @@ function commit(i){
   if (window.lavish?.queuePrompt) {
     window.lavish.queuePrompt(
       `${CARDS[i].id} (${CARDS[i].title}): ${verdict}.` + (notes ? ` Reasoning: ${notes}` : ''),
-      { tag:'vision-verdict', queueKey:CARDS[i].id, text:`${CARDS[i].id}: ${verdict}`, element:card, data:{ id:CARDS[i].id, verdict, notes } });
+      { tag:'vision-verdict', queueKey:CARDS[i].id, text:CARDS[i].id, element:card, data:{ id:CARDS[i].id, verdict, notes } });
   }
   card.classList.add('vr-gone');
   topIdx += 1;
