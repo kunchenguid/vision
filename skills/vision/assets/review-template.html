@@ -39,11 +39,10 @@
     <div class="vr-progress"><span>hypotheticals</span><b id="vr-progress"></b></div>
     <div class="vr-stack" id="vr-stack"></div>
     <div class="vr-done" id="vr-done" hidden>
-      <h2>Every hypothetical is answered</h2>
-      <p class="vr-done-note">Your verdicts are recorded below. Send them back and the agent rebuilds the draft around them for the next round.</p>
-      <ul class="vr-ledger" id="vr-ledger"></ul>
-      <button type="button" class="vr-send" id="vr-send" onclick="sendBack()">Send my verdicts back</button>
-      <p class="vr-sent" id="vr-sent" hidden>Sent - the agent is folding these into the next draft.</p>
+      <h2>Review your queued feedback</h2>
+      <p class="vr-done-note">You have reached the end of the cards. Review, edit, or remove verdicts in the Conversation panel before sending.</p>
+      <button type="button" class="vr-send" id="vr-send" onclick="sendBack()">Send queued feedback</button>
+      <p class="vr-sent" id="vr-sent" role="status" hidden></p>
     </div>
   </aside>
 
@@ -75,7 +74,7 @@ flush();
 document.getElementById('vr-doc').innerHTML = out.join('\n');
 
 const stack = document.getElementById('vr-stack');
-let topIdx = 0; const ledger = [];
+let topIdx = 0;
 stack.innerHTML = CARDS.map((c,i) => `
   <div class="vr-card" id="vrc-${i}">
     <span class="vr-card-id">${c.id} · ${i+1}/${CARDS.length}</span>
@@ -100,44 +99,41 @@ function layout(){
   document.getElementById('vr-progress').textContent = `${n} / ${CARDS.length}`;
 }
 function pick(i, btn){
+  if(i !== topIdx) return;
   const card = document.getElementById('vrc-'+i);
   card.querySelectorAll('.vr-verdicts button').forEach(b => b.setAttribute('aria-pressed','false'));
   btn.setAttribute('aria-pressed','true');
   card.querySelector('.vr-commit').disabled = false;
 }
 function commit(i){
+  if(i !== topIdx) return;
   const card = document.getElementById('vrc-'+i);
   const verdict = card.querySelector('.vr-verdicts button[aria-pressed="true"]')?.textContent;
   if(!verdict) return;
   const notes = card.querySelector('.vr-reason').value.trim();
-  ledger.push({ id: CARDS[i].id, verdict, notes });
+  card.querySelector('.vr-commit').disabled = true;
   if (window.lavish?.queuePrompt) {
     window.lavish.queuePrompt(
       `${CARDS[i].id} (${CARDS[i].title}): ${verdict}.` + (notes ? ` Reasoning: ${notes}` : ''),
-      { tag:'vision-verdict', queueKey:CARDS[i].id, text:`${CARDS[i].id}: ${verdict}`, element:card, data:{ id:CARDS[i].id, verdict, notes } });
+      { tag:'vision-verdict', queueKey:CARDS[i].id, text:CARDS[i].id, element:card });
   }
   card.classList.add('vr-gone');
   topIdx += 1;
   layout();
   setTimeout(() => { card.hidden = true; layout(); }, 360);
   if (topIdx >= CARDS.length) {
-    document.getElementById('vr-ledger').innerHTML =
-      ledger.map(l => `<li><b>${l.id}</b> ${l.verdict}${l.notes ? ' - ' + esc(l.notes) : ''}</li>`).join('');
     setTimeout(() => { stack.hidden = true; document.getElementById('vr-done').hidden = false; }, 400);
   }
 }
 function sendBack(){
-  const btn = document.getElementById('vr-send');
-  if (window.lavish?.queuePrompt) {
-    window.lavish.queuePrompt(
-      `All ${CARDS.length} hypotheticals are answered. Fold every verdict into the draft and send back the next round.`,
-      { tag:'vision-verdict', queueKey:'vision-round-complete', text:'All verdicts recorded - next round',
-        element: document.getElementById('vr-done'), data:{ complete:true, verdicts: ledger } });
+  const feedbackStatus = document.getElementById('vr-sent');
+  feedbackStatus.hidden = false;
+  if (typeof window.lavish?.sendQueuedPrompts !== 'function') {
+    feedbackStatus.textContent = 'Open this board with lavish-axi to send feedback.';
+    return;
   }
-  window.lavish?.sendQueuedPrompts?.();
-  btn.disabled = true;
-  btn.textContent = 'Sent for the next round';
-  document.getElementById('vr-sent').hidden = false;
+  window.lavish.sendQueuedPrompts();
+  feedbackStatus.textContent = 'Check the Conversation panel for delivery status. An empty queue sends nothing.';
 }
 layout();
 </script>

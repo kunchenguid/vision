@@ -134,6 +134,19 @@ Ships as an [`npx skills`](https://github.com/vercel-labs/skills) package.
 
 ## Development
 
+Run the review-board browser regressions with Node.js 20 or newer:
+
+```sh
+npm ci
+npx playwright install chromium
+npm test
+```
+
+The tests drive the shipped HTML/CSS with real browser clicks and keyboard
+input. A simulated Lavish queue exercises repeated submissions, edits,
+removals, and sending; it does not replace verification against a running
+`lavish-axi` session.
+
 ```sh
 # edit the skill
 $EDITOR skills/vision/SKILL.md

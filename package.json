@@ -1,0 +1,10 @@
+{
+  "name": "vision",
+  "private": true,
+  "scripts": {
+    "test": "playwright test --config tests/playwright.config.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  }
+}
