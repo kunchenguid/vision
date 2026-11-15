@@ -116,9 +116,20 @@ repo + author
 | ------ | ------- |
 | Slash | `/vision` (in repo) or `/vision owner/repo` |
 | Natural language | "help me write a VISION.md for this project" |
+| Simplified Technical English | `/vision --ste`, or "write it in Simplified Technical English" |
 
 The agent should auto-invoke when asked to write, refine, or stress-test a
 project vision or contribution-acceptance criteria.
+
+### Simplified Technical English (opt-in)
+
+With `--ste`, or when you ask for it, the skill writes to the
+[ASD-STE100](https://www.asd-ste100.org/) Simplified Technical English
+standard: approved words where practical, short sentences, active voice, one
+statement per sentence, and no long noun clusters. This covers the VISION.md
+text, the hypothetical cards, and the board replies. It suits projects whose
+readers or contributors are not native English speakers. Without the flag,
+the output style does not change.
 
 ## Package layout
 
