@@ -217,8 +217,8 @@ Scope:
   proposal, tested principle, steelman), the run note, and every
   `poll --agent-reply` line.
 - Does not apply to the template's own fixed text, code, commands, file
-  paths, or PR titles and commit messages cited as evidence; quote those
-  as-is.
+  paths, PR titles and commit messages cited as evidence, or quotes of an
+  approved baseline; quote those as-is.
 - Delta mode: write candidate additions and edits in STE. Leave the approved
   baseline as it is unless the author asks for an STE rewrite; that rewrite
   is itself a candidate change they approve.
@@ -229,8 +229,11 @@ Rules:
   approved meaning and part of speech. Where no approved word fits, use a
   technical name or technical verb of the project, and keep it consistent.
 - One word for one thing: never switch synonyms for the same concept.
-- One statement per sentence. Descriptive sentences have at most 25 words;
-  instruction sentences have at most 20.
+- One statement per sentence. Never join two clauses with "and", "but",
+  "so", or a semicolon; write two sentences. A list of words inside one
+  clause is fine.
+- Descriptive sentences have at most 25 words; instruction sentences have
+  at most 20.
 - Use the active voice. Use only simple tenses: present, past, and future.
 - Keep noun clusters to three words or fewer; break longer ones apart with
   "of", "for", or a relative clause.
@@ -241,10 +244,15 @@ Rules:
   longer principle section into more paragraphs.
 
 The hard rules still apply: one sentence per line, plain hyphens, no
-marketing voice. Keep the step 1 anatomy and its fixed openers; write what
-follows them in STE. Shorter sentences are not a reason to exceed the length
-target; distill harder instead. Name STE in the run note so the author can
-see the style is on.
+marketing voice. Keep the step 1 anatomy and its fixed openers ("exists so
+that", "It owns exactly one thing:", "A change aligns when", "A change should
+be resisted when") as they are; write what follows them in STE. Write the
+template's "It serves ..., and it ..." line as two sentences. Shorter
+sentences are not a reason to exceed the length target; distill harder
+instead. Name STE in the run note so the author can see the style is on.
+
+Before you build or update the board, and before each reply, check every
+sentence in scope against these rules. Rewrite each sentence that fails.
 
 ## Pre-flight checklist (before drafting)
 
