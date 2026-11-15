@@ -81,6 +81,10 @@ report a blocker only if the launch itself fails.
 - Author: the person whose vision this is; default to the repo owner. Their
   merged work is the evidence base.
 - Ask one short question if the target or author is genuinely ambiguous.
+- Output style: Simplified Technical English when the invocation carries
+  `--ste` or the author asks for Simplified Technical English or ASD-STE100,
+  at the start or at any later point; follow the Simplified Technical English
+  section from then on. Otherwise use the default style and never ask.
 
 ### Step 1 - Learn the pattern
 
@@ -201,9 +205,51 @@ If the author names exemplar visions, read them; note shape, voice, length.
     A change aligns when {testable positive criteria}.
     A change should be resisted when {testable negative criteria}.
 
+## Simplified Technical English (opt-in)
+
+When the author opts in (step 0), write to the ASD-STE100 Simplified
+Technical English standard (https://www.asd-ste100.org/). These rules are a
+working summary; the specification and its dictionary are the authority.
+
+Scope:
+
+- Applies to every line of VISION.md text, every CARDS field (title,
+  proposal, tested principle, steelman), the run note, and every
+  `poll --agent-reply` line.
+- Does not apply to the template's own fixed text, code, commands, file
+  paths, or PR titles and commit messages cited as evidence; quote those
+  as-is.
+- Delta mode: write candidate additions and edits in STE. Leave the approved
+  baseline as it is unless the author asks for an STE rewrite; that rewrite
+  is itself a candidate change they approve.
+
+Rules:
+
+- Use the STE dictionary's approved words where practical, each in its one
+  approved meaning and part of speech. Where no approved word fits, use a
+  technical name or technical verb of the project, and keep it consistent.
+- One word for one thing: never switch synonyms for the same concept.
+- One statement per sentence. Descriptive sentences have at most 25 words;
+  instruction sentences have at most 20.
+- Use the active voice. Use only simple tenses: present, past, and future.
+- Keep noun clusters to three words or fewer; break longer ones apart with
+  "of", "for", or a relative clause.
+- Keep the articles ("a", "the") and other small words; never write in a
+  telegraphic style.
+- Do not use -ing verb forms, except in technical names.
+- Keep each paragraph on one topic, with at most six sentences; split a
+  longer principle section into more paragraphs.
+
+The hard rules still apply: one sentence per line, plain hyphens, no
+marketing voice. Keep the step 1 anatomy and its fixed openers; write what
+follows them in STE. Shorter sentences are not a reason to exceed the length
+target; distill harder instead. Name STE in the run note so the author can
+see the style is on.
+
 ## Pre-flight checklist (before drafting)
 
 - [ ] Target repo and author resolved
+- [ ] Output style resolved: default, or STE when the author opted in
 - [ ] Existing VISION.md checked (mode chosen)
 - [ ] Existing VISION-ANSWERS.md migrated or confirmed absent
 - [ ] Evidence sheet built from real PRs or commits (no invented evidence)
@@ -217,6 +263,9 @@ If the author names exemplar visions, read them; note shape, voice, length.
       traced changelog line in the review reply
 - [ ] VISION.md is sufficient on its own for an accept/resist test
 - [ ] No answers file written, kept, or pointed to in the target repo
+- [ ] If STE is on: every sentence of VISION.md, the cards, and the replies
+      passes the STE rules (word count, active voice, one statement, noun
+      clusters)
 
 ## Migration (existing VISION-ANSWERS.md)
 
