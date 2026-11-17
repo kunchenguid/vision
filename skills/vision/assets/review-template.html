@@ -5,13 +5,18 @@
   Agent instructions:
   1. Copy this file and review.css next to each other in the tool's scratch
      area, never into the target repo.
-  2. Fill ONLY the four slots marked {{...}} below:
+  2. Fill ONLY the three slots marked {{...}} below:
        {{PROJECT}}        - the target repo name (appears in <title> and the header meta)
        {{RUN_NOTE}}       - one short italic note for the header (mode, date, or blank)
-       {{DRAFT_MARKDOWN}} - the full latest vision draft at board heading levels
-                            (# Vision, ## sections, paragraphs), even when it
-                            will be written into STRATEGY.md one level lower
-       CARDS              - one object per hypothetical: { id, title, body, tests, why }
+                            PROJECT and RUN_NOTE are HTML text: escape & < > before inserting.
+       {{DATA_JSON}}      - one JSON object, written with a JSON serializer (never by hand):
+                            {"draft": "<full latest vision draft at board heading levels
+                                        (# Vision, ## sections, paragraphs), even when it
+                                        will be written into STRATEGY.md one level lower>",
+                             "cards": [{"id","title","body","tests","why"}, ...]}
+                            After serializing, replace every "<" with "<" so no value can
+                            close the <script> block. The page renders every field as text, so
+                            a draft or card containing HTML or backticks can never run script.
   3. Change NOTHING else: no restyling, no layout edits, no extra sections.
      The stylesheet and structure are the /vision house style.
   4. Open with: npx -y lavish-axi <this-file>   then poll for verdicts.
@@ -51,19 +56,22 @@
 
 </main>
 
+<script type="application/json" id="vr-data">{{DATA_JSON}}</script>
 <script>
-const DRAFT = `{{DRAFT_MARKDOWN}}`;
-
-const CARDS = [
-  // {{CARDS}} - one object per hypothetical, in presentation order:
-  // { id:'H-1', title:'...', body:'the concrete proposal', tests:'tests: "the principle, quoted from the draft"', why:'both sides, steelmanned' },
-];
+/* One object per hypothetical, in presentation order:
+   { "id":"H-1", "title":"...", "body":"the concrete proposal",
+     "tests":"tests: \"the principle, quoted from the draft\"", "why":"both sides, steelmanned" } */
+const DATA = JSON.parse(document.getElementById('vr-data').textContent);
+const DRAFT = String(DATA.draft ?? '');
+const CARDS = (Array.isArray(DATA.cards) ? DATA.cards : []).map(c => ({
+  id: String(c.id ?? ''), title: String(c.title ?? ''), body: String(c.body ?? ''),
+  tests: String(c.tests ?? ''), why: String(c.why ?? '') }));
 
 const VERDICTS = ['In vision','Off mission','Conditional'];
 
 /* ------- no changes below this line ------- */
 
-function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function inline(s){ return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>'); }
 const out=[]; let para=[];
 const flush=()=>{ if(para.length){ out.push('<p>'+para.map(inline).join(' ')+'</p>'); para=[]; } };
@@ -80,11 +88,11 @@ const stack = document.getElementById('vr-stack');
 let topIdx = 0; const ledger = [];
 stack.innerHTML = CARDS.map((c,i) => `
   <div class="vr-card" id="vrc-${i}">
-    <span class="vr-card-id">${c.id} · ${i+1}/${CARDS.length}</span>
-    <h3 class="vr-card-title">${c.title}</h3>
-    <p class="vr-card-body">${c.body}</p>
-    <div class="vr-card-tests">${c.tests}</div>
-    <div class="vr-why"><span class="vr-why-label">Why the answer is not obvious</span><p>${c.why}</p></div>
+    <span class="vr-card-id">${esc(c.id)} · ${i+1}/${CARDS.length}</span>
+    <h3 class="vr-card-title">${esc(c.title)}</h3>
+    <p class="vr-card-body">${esc(c.body)}</p>
+    <div class="vr-card-tests">${esc(c.tests)}</div>
+    <div class="vr-why"><span class="vr-why-label">Why the answer is not obvious</span><p>${esc(c.why)}</p></div>
     <div class="vr-verdicts">${VERDICTS.map(v => `<button type="button" aria-pressed="false" onclick="pick(${i}, this)">${v}</button>`).join('')}</div>
     <textarea class="vr-reason" placeholder="reasoning (this is what the vision gets rebuilt from)"></textarea>
     <button type="button" class="vr-commit" disabled onclick="commit(${i})">Record verdict</button>
@@ -124,7 +132,7 @@ function commit(i){
   setTimeout(() => { card.hidden = true; layout(); }, 360);
   if (topIdx >= CARDS.length) {
     document.getElementById('vr-ledger').innerHTML =
-      ledger.map(l => `<li><b>${l.id}</b> ${l.verdict}${l.notes ? ' - ' + esc(l.notes) : ''}</li>`).join('');
+      ledger.map(l => `<li><b>${esc(l.id)}</b> ${esc(l.verdict)}${l.notes ? ' - ' + esc(l.notes) : ''}</li>`).join('');
     setTimeout(() => { stack.hidden = true; document.getElementById('vr-done').hidden = false; }, 400);
   }
 }
