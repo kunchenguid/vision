@@ -14,7 +14,7 @@
                                         (# Vision, ## sections, paragraphs), even when it
                                         will be written into STRATEGY.md one level lower>",
                              "cards": [{"id","title","body","tests","why"}, ...]}
-                            After serializing, replace every "<" with "<" so no value can
+                            After serializing, replace every "<" with the six characters \u003c (backslash, u, 0, 0, 3, c) so no value can
                             close the <script> block. The page renders every field as text, so
                             a draft or card containing HTML or backticks can never run script.
   3. Change NOTHING else: no restyling, no layout edits, no extra sections.
