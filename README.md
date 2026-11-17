@@ -31,12 +31,18 @@ They are just not written down - so every contributor, every coding agent, and
 every future you re-litigates them from scratch.
 
 **vision** is an [Agent Skill](https://agentskills.io) that mines what you
-actually build, drafts a VISION.md as a testable acceptance policy, then
+actually build, drafts your project's vision as a testable acceptance policy, then
 stress-tests it with hard hypotheticals - tempting-but-off-mission features,
 principle collisions, slippery slopes - whose answers only you can give. You
 answer them on an interactive review board, and the reasoning behind each
-verdict is reflected in the writing, until VISION.md is sufficient on its
+verdict is reflected in the writing, until the vision is sufficient on its
 own for an accept/resist test.
+
+The vision goes in VISION.md when your repo already has one. Otherwise it goes
+in a Vision section of STRATEGY.md, created if missing. The skill writes only
+that section and leaves every other section alone; where another section
+repeats the vision, it proposes a pointer or deletion and applies it only on
+your yes.
 
 - **Evidence over vibes** - every principle cites real merged PRs or commits;
   generic engineering virtues are banned. If your history is unreadable, the
@@ -49,7 +55,8 @@ own for an accept/resist test.
   paper set like literature, your full latest draft always visible,
   hypotheticals dealt one at a time from a stack of cards; a verdict flips the
   card and reveals the next.
-- **One alignment surface** - VISION.md is what a reviewer uses; board
+- **One alignment surface** - the vision (VISION.md, or the Vision section of
+  STRATEGY.md) is what a reviewer uses; board
   transcripts stay ephemeral and are never committed next to the vision.
 
 For what the result looks like, see
@@ -89,6 +96,7 @@ repo + author
           ▼
 ┌───────────────────┐
 │ existing vision?  │  yes → delta mode; migrate any answers file
+│                   │  target: VISION.md if present, else STRATEGY.md's Vision section
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
@@ -107,7 +115,7 @@ repo + author
 │ review board      │  card-stack verdicts → fold reasoning into draft → approval
 └─────────┬─────────┘
           ▼
-  VISION.md
+  VISION.md, or the Vision section of STRATEGY.md
 ```
 
 ## Usage
@@ -115,7 +123,7 @@ repo + author
 | Invoke | Example |
 | ------ | ------- |
 | Slash | `/vision` (in repo) or `/vision owner/repo` |
-| Natural language | "help me write a VISION.md for this project" |
+| Natural language | "help me write a vision for this project" |
 
 The agent should auto-invoke when asked to write, refine, or stress-test a
 project vision or contribution-acceptance criteria.
