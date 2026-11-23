@@ -25,6 +25,10 @@
 
 <h3 align="center">What does your project refuse to become?</h3>
 
+<p align="center">
+  <a href="https://youtu.be/X3bhjQbxnMg"><b>▶ Watch the video</b></a>
+</p>
+
 Your repo has values. They are in the two hundred PRs you merged, the features
 you quietly declined, the bug you fixed at the root instead of the symptom.
 They are just not written down - so every contributor, every coding agent, and
