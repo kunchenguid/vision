@@ -197,8 +197,12 @@ Then choose the mode:
 
 - Copy `assets/review-template.html` and `assets/review.css` into the tool's
   scratch area (not the target repo), then fill only the template's marked
-  slots: project name, run note, the full DRAFT markdown, and the CARDS array
-  (id, title, proposal, tested principle, both-sides steelman per card).
+  slots: project name and run note (HTML-escaped text), and one DATA_JSON
+  object holding the full draft markdown and the cards array (id, title,
+  proposal, tested principle, both-sides steelman per card). Write DATA_JSON
+  with a JSON serializer and replace every `<` with the six-character
+  JSON escape `\u003c` (backslash, u, 0, 0, 3, c), so draft or
+  card text can never run script on the board.
 - Change nothing else: the template already carries the house structure -
   full draft on the left, one card at a time on the right, the steelman in
   full view, one queued verdict per card - so no boilerplate is rewritten and
