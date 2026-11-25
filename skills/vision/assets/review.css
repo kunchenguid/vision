@@ -80,6 +80,17 @@ body.vr {
 .vr-why-label { display: block; font-size: 13px; font-variant-caps: small-caps; letter-spacing: .1em; color: var(--mute); margin-bottom: 2px; }
 .vr-why p { font-size: 14.5px; color: var(--ink); margin: 0; }
 
+/* the plain layer: question and examples above the proposal; what each verdict means below the steelman.
+   Nothing is behind a click. */
+.vr-card-ask { font-size: 17px; margin: 0; }
+.vr-plain { margin: 2px 0 0; }
+.vr-examples { margin: 0; padding-left: 20px; font-size: 15px; }
+.vr-examples li { margin: 2px 0; }
+.vr-choices { margin: 0; font-size: 15px; display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; }
+.vr-choices dt { font-variant-caps: small-caps; letter-spacing: .06em; font-weight: 600; }
+.vr-choices dd { margin: 0; }
+.vr-plain-missing { font-size: 14px; font-style: italic; color: var(--mute); margin: 0; }
+
 /* verdict controls: quiet, bordered, ink fill when chosen */
 .vr-verdicts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
 .vr-verdicts button {

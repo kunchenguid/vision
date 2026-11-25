@@ -11,7 +11,12 @@
        {{DRAFT_MARKDOWN}} - the full latest vision draft at board heading levels
                             (# Vision, ## sections, paragraphs), even when it
                             will be written into STRATEGY.md one level lower
-       CARDS              - one object per hypothetical: { id, title, body, tests, why }
+       CARDS              - one object per hypothetical:
+                            { id, title, ask, examples, choices, body, tests, why }
+                            ask (string), examples (array of 2-3 strings) and
+                            choices ({ in, off, cond } of strings) are required
+                            on every card. The board names any of the three that
+                            is missing or the wrong shape.
   3. Change NOTHING else: no restyling, no layout edits, no extra sections.
      The stylesheet and structure are the /vision house style.
   4. Open with: npx -y lavish-axi <this-file>   then poll for verdicts.
@@ -56,7 +61,11 @@ const DRAFT = `{{DRAFT_MARKDOWN}}`;
 
 const CARDS = [
   // {{CARDS}} - one object per hypothetical, in presentation order:
-  // { id:'H-1', title:'...', body:'the concrete proposal', tests:'tests: "the principle, quoted from the draft"', why:'both sides, steelmanned' },
+  // { id:'H-1', title:'a short plain label',
+  //   ask:'the decision as one plain question',
+  //   examples:['what someone would see in case 1', 'case 2', 'the bad case that makes it hard'],
+  //   choices:{ in:'what In vision means here', off:'what Off mission means here', cond:'what Conditional means, with an example condition' },
+  //   body:'the concrete proposal', tests:'tests: "the principle, quoted from the draft"', why:'both sides, steelmanned' },
 ];
 
 const VERDICTS = ['In vision','Off mission','Conditional'];
@@ -76,15 +85,48 @@ for(const line of DRAFT.split('\n')){
 flush();
 document.getElementById('vr-doc').innerHTML = out.join('\n');
 
+// the plain layer: shape-checked and escaped; a missing or wrong-shaped field never breaks the board,
+// and the card says which part is missing
+const txt = v => (typeof v === 'string' && v.trim()) ? v : '';
+function plainFields(c){
+  const choices = (c.choices && typeof c.choices === 'object') ? c.choices : {};
+  return {
+    ask: txt(c.ask),
+    examples: Array.isArray(c.examples) ? c.examples.filter(txt) : [],
+    choices,
+    hasChoices: Boolean(txt(choices.in) && txt(choices.off) && txt(choices.cond)),
+  };
+}
+// above the proposal: a note naming any missing part, the plain question, the examples
+function plainTop(c){
+  const { ask, examples, hasChoices } = plainFields(c);
+  const gaps = [];
+  if (!ask) gaps.push('plain question');
+  if (!examples.length) gaps.push('examples');
+  if (!hasChoices) gaps.push('what each answer would mean');
+  let html = gaps.length ? `<p class="vr-plain-missing">Missing from this card: ${gaps.join(', ')}.</p>` : '';
+  if (ask) html += `<p class="vr-card-ask">${inline(ask)}</p>`;
+  if (examples.length) html += `<div class="vr-plain"><span class="vr-why-label">For example</span><ul class="vr-examples">${examples.map(e => `<li>${inline(e)}</li>`).join('')}</ul></div>`;
+  return html;
+}
+// below the steelman: what each verdict would mean
+function plainChoices(c){
+  const { choices, hasChoices } = plainFields(c);
+  if (!hasChoices) return '';
+  return `<div class="vr-plain"><span class="vr-why-label">What each answer would mean</span><dl class="vr-choices"><dt>In vision</dt><dd>${inline(choices.in)}</dd><dt>Off mission</dt><dd>${inline(choices.off)}</dd><dt>Conditional</dt><dd>${inline(choices.cond)}</dd></dl></div>`;
+}
+
 const stack = document.getElementById('vr-stack');
 let topIdx = 0; const ledger = [];
 stack.innerHTML = CARDS.map((c,i) => `
   <div class="vr-card" id="vrc-${i}">
     <span class="vr-card-id">${c.id} · ${i+1}/${CARDS.length}</span>
-    <h3 class="vr-card-title">${c.title}</h3>
+    <h3 class="vr-card-title">${inline(String(c.title ?? ''))}</h3>
+    ${plainTop(c)}
     <p class="vr-card-body">${c.body}</p>
     <div class="vr-card-tests">${c.tests}</div>
     <div class="vr-why"><span class="vr-why-label">Why the answer is not obvious</span><p>${c.why}</p></div>
+    ${plainChoices(c)}
     <div class="vr-verdicts">${VERDICTS.map(v => `<button type="button" aria-pressed="false" onclick="pick(${i}, this)">${v}</button>`).join('')}</div>
     <textarea class="vr-reason" placeholder="reasoning (this is what the vision gets rebuilt from)"></textarea>
     <button type="button" class="vr-commit" disabled onclick="commit(${i})">Record verdict</button>
@@ -115,8 +157,8 @@ function commit(i){
   ledger.push({ id: CARDS[i].id, verdict, notes });
   if (window.lavish?.queuePrompt) {
     window.lavish.queuePrompt(
-      `${CARDS[i].id} (${CARDS[i].title}): ${verdict}.` + (notes ? ` Reasoning: ${notes}` : ''),
-      { tag:'vision-verdict', queueKey:CARDS[i].id, text:`${CARDS[i].id}: ${verdict}`, element:card, data:{ id:CARDS[i].id, verdict, notes } });
+      `${CARDS[i].id} (${CARDS[i].title}): ${verdict}.` + (txt(CARDS[i].ask) ? ` Question: ${CARDS[i].ask}` : '') + (notes ? ` Reasoning: ${notes}` : ''),
+      { tag:'vision-verdict', queueKey:CARDS[i].id, text:`${CARDS[i].id}: ${verdict}`, element:card, data:{ id:CARDS[i].id, ask:txt(CARDS[i].ask), verdict, notes } });
   }
   card.classList.add('vr-gone');
   topIdx += 1;
