@@ -53,7 +53,10 @@ your yes.
   skill refuses rather than inventing your values.
 - **Stress-tested, not brainstormed** - 8-12 fault-line hypotheticals per
   vision, both sides steelmanned; if your answer is predictable, the question
-  gets replaced.
+  gets replaced. Each card also puts the decision as a plain question with
+  concrete examples above the proposal, and what each verdict would mean
+  below the steelman, so you can answer without knowing the codebase's
+  internal names.
 - **A house-style review surface** - the package ships a stylesheet and a
   board template the agent fills rather than rewrites: black ink on white
   paper set like literature, your full latest draft always visible,

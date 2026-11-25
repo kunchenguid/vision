@@ -64,6 +64,10 @@ report a blocker only if the launch itself fails.
 5. **No softball hypotheticals.** Each one must sit on a genuine fault line
    where yes and no are both defensible, with both sides steelmanned. If you
    can predict the author's answer, replace the hypothetical.
+   A hard question is not a hard-to-read question: every card also carries a
+   plain layer: the decision as one plain question and concrete examples
+   above the proposal, and what each verdict would mean below the steelman.
+   The proposal, principle and steelman stay in full view, in their order.
 6. **The review loop runs on lavish-axi, from the shipped template.** Draft
    and hypotheticals are presented as one board built from
    `assets/review-template.html` + `assets/review.css`, used as-is: black ink
@@ -189,16 +193,34 @@ Then choose the mode:
   - identity questions the draft leaves open.
 - Format per hypothetical: id, title, the concrete proposal (2-4 sentences),
   the principle it tests (quote the draft), and why the answer is non-obvious
-  (steelman both sides).
+  (steelman both sides). Add the plain layer, using exactly these shapes:
+  - `ask` (string): the decision as one plain question;
+  - `examples` (array of 2-3 strings): what the author or a user would
+    actually see if the proposal shipped, including the bad case that makes
+    the question hard;
+  - `choices` (object `{ in, off, cond }` of strings): one plain sentence
+    each for what "In vision", "Off mission" and "Conditional" would mean for
+    this proposal, with an example condition for Conditional.
+  The plain layer helps the author read the card; it never replaces the
+  steelman.
 - Quality gate: delete and replace any hypothetical whose answer you can
   predict.
+- Plain-language gate: read each card's `title`, `ask`, `examples` and
+  `choices` as someone who knows the product but not this repo's file names
+  or acronyms. Internal names are allowed only when defined in the same
+  sentence. If that reader could not pick a verdict, rewrite the card before
+  the board opens.
 
 ### Step 6 - Review loop (lavish-axi, from the shipped template)
 
 - Copy `assets/review-template.html` and `assets/review.css` into the tool's
   scratch area (not the target repo), then fill only the template's marked
   slots: project name, run note, the full DRAFT markdown, and the CARDS array
-  (id, title, proposal, tested principle, both-sides steelman per card).
+  (per card: `id`, `title`, `ask`, `examples`, `choices`, `body` for
+  the proposal, `tests` for the tested principle, and `why` for the
+  both-sides steelman). Before launch, check every card has a non-blank
+  `ask`, 2-3 non-blank string `examples`, and `choices` with non-blank `in`,
+  `off` and `cond`; the board names any part that is missing.
 - Change nothing else: the template already carries the house structure -
   full draft on the left, one card at a time on the right, the steelman in
   full view, one queued verdict per card - so no boilerplate is rewritten and
@@ -302,6 +324,8 @@ marker (a new file gets only the title line above it):
 - [ ] Every drafted line traces to the evidence sheet or author reasoning
       reflected in the vision document
 - [ ] 8-12 hypotheticals, none predictable, both sides steelmanned
+- [ ] Every card has a plain layer in the stated shapes, and passes the
+      plain-language gate
 - [ ] Every author verdict's reasoning is reflected in the draft, with a
       traced changelog line in the review reply
 - [ ] The vision document is sufficient on its own for an accept/resist test
